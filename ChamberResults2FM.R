@@ -534,13 +534,20 @@ plot(chamber.T0.corrected[chamber.T0.corrected$Time == 0,c("Concentration")])
  p=1-(-0.2795) #1.2795
  
  ########## Plotting the data
+ str(Data.AND.Coefficients.1)
+ 
+ Data.AND.Coefficients.1$Date<-Data.AND.Coefficients.1$Test.Factor;
+ 
+ levels(Data.AND.Coefficients.1$Date)<-list("October 1" = "3", "October 12" = "4" ,"October 27" = "5" ) ;
+ 
  
  library(lattice)
+ 
  xyplot(Slope~Chamber.Factor, data=Data.AND.Coefficients.1)
  
- bwplot(Slope~Chamber.Factor, data=Data.AND.Coefficients.1)
+ bwplot(kg_ha_d~Chamber.Factor| Date,  data=Data.AND.Coefficients.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
  
- bwplot(Concentration~Chamber.Factor, data=Data.AND.Coefficients.1)
+ bwplot(Concentration~Chamber.Factor, data=Data.AND.Coefficients.1, xlab=)
  
  
  # There are two very large rates in the automatic chamber, higher than 40. Lets find out which ones are these
@@ -701,7 +708,7 @@ xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Frame), 
 
 # Try the HMR package for analysis 
 
-# install.packages("HMR", dep=T)
+install.packages("HMR", dep=T)
 
 library(HMR)
 
@@ -1027,13 +1034,13 @@ par( mar=c(5, 5, 4, 2) + 0.1)
 
 png(file="AllData3_b.png", width=3840, height=3840, pointsize=48)
 
-par( mar=c(8, 8, 4, 2) + 0.1)
+par( mar=c(8, 9, 4, 2) + 0.1)
 
-par(mgp=c(5,1,0))
+par(mgp=c(6,2,0))
 
 max(Data.AND.Coefficients$kg_ha_d) # 112
 
-plot(Data.AND.Coefficients[Data.AND.Coefficients$Chamber.Factor == "Manual" & Data.AND.Coefficients$Test.Factor == 3, c("kg_ha_d")],Data.AND.Coefficients[Data.AND.Coefficients$Chamber.Factor == "Automatic"& Data.AND.Coefficients$Test.Factor == 3, c("kg_ha_d")], col="BLUE", pch=16, cex=3, xlab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1 ~'(Manual and Gasmet)'), ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1 ~'(Semi-automatic)'), cex.axis=2.5, cex.lab=2.5,xlim=c(0,120), ylim=c(0,120)) ;
+plot(Data.AND.Coefficients[Data.AND.Coefficients$Chamber.Factor == "Manual" & Data.AND.Coefficients$Test.Factor == 3, c("kg_ha_d")],Data.AND.Coefficients[Data.AND.Coefficients$Chamber.Factor == "Automatic"& Data.AND.Coefficients$Test.Factor == 3, c("kg_ha_d")], col="BLUE", pch=16, cex=3, xlab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1 ~'(Manual and Gasmet)'), ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1 ~'(Semi-automatic)'), cex.axis=3, cex.lab=3,xlim=c(0,120), ylim=c(0,120)) ;
 
 points(Data.AND.Coefficients[Data.AND.Coefficients$Chamber.Factor == "Manual" & Data.AND.Coefficients$Test.Factor == 4, c("kg_ha_d")],Data.AND.Coefficients[Data.AND.Coefficients$Chamber.Factor == "Automatic"& Data.AND.Coefficients$Test.Factor == 4, c("kg_ha_d")], col="GREEN", pch=16, cex=3) ;
 
@@ -1043,7 +1050,97 @@ points(Gasmet.Flux.1$kg_ha_d,SemiAuto.Flux.1$kg_ha_d, col="RED", pch=16, cex=3)
 
 abline(0, 1, col="BLACK", lwd=3)
 
+legend(x=80,y=40,legend=c("Oct-1", "Oct-12", "Oct-27", "Gasmet"),col=c("BLUE", "GREEN" ,"PURPLE", "RED"  ), pch=16, bty="n", cex=3)
+
+dev.off()
+
+str(Data.AND.Coefficients.1)
+
+Data.AND.Coefficients.1$Date<-Data.AND.Coefficients.1$Test.Factor;
+
+levels(Data.AND.Coefficients.1$Date)<-list("October 1" = "3", "October 12" = "4" ,"October 27" = "5" ) ;
+
+
+
+####################################################################################################
+
+## Plotting the raw emission data for alldata 
+
+str(Data.AND.Coefficients.1)
+
+str(Gasmet.Flux.1) 
+
+str(SemiAuto.Flux.1)
+
+Gasmet.Flux.1$Plot.Factor<-as.factor(Gasmet.Flux.1$Sample.Name) ;
+
+
+
+
+xyplot(Slope~Chamber.Factor, data=Data.AND.Coefficients.1)
+
+bwplot(kg_ha_d~Chamber.Factor| Date,  data=Data.AND.Coefficients.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
+
+boxplot(kg_ha_d ~ Chamber.Factor + Date,  data=Data.AND.Coefficients.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
+
+
+BoxWiskers.data<-cbind(Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 1" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 1" & Data.AND.Coefficients.1$Chamber.Factor == "Automatic", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 12" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 12" & Data.AND.Coefficients.1$Chamber.Factor == "Automatic", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 27" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 27" & Data.AND.Coefficients.1$Chamber.Factor == "Automatic", c("kg_ha_d")], Gasmet.Flux.1$kg_ha_d, SemiAuto.Flux.1$kg_ha_d) ;
+
+str(BoxWiskers.data)
+
+BoxWiskers.data.1<-as.data.frame(BoxWiskers.data);
+
+BoxWiskers.data.1[6:10, 7:8]<-NA
+
+
+
+str(BoxWiskers.data.1)
+
+names(BoxWiskers.data.1)<-c("Manual" ,  "Semi", "Manual" ,  "Semi", "Manual" ,  "Semi", "Gasmet" , "Semi") ;
+
+png(file="AllData3_c.png", width=3840, height=3840, pointsize=48) ;
+
+par( mar=c(5, 8, 4, 2) + 0.1)
+
+par(mgp=c(6,2,0))
+
+
+boxplot(BoxWiskers.data.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1), boxfill=c("BLUE","BLUE", "GREEN" ,"GREEN" , "PURPLE", "PURPLE", "RED" ,"RED"  ),cex.axis=2, cex.lab=2)
+
+legend(x=0.5,y=120,legend=c("Oct-1", "Oct-12", "Oct-27", "Gasmet"),col=c("BLUE", "GREEN" ,"PURPLE", "RED"  ), pch=16, bty="n", cex=2)
+
 dev.off()
 
 
+
+####################################################################################################
+
+## Plotting the differences in  emission data for all paired data
+
+BoxWiskers.data.1$Oct.1<-BoxWiskers.data.1[,2] - BoxWiskers.data.1[,1] ;
+
+BoxWiskers.data.1$Oct.12<-BoxWiskers.data.1[,4] - BoxWiskers.data.1[,3] ;
+
+BoxWiskers.data.1$Oct.27<-BoxWiskers.data.1[,6] - BoxWiskers.data.1[,5] ;
+
+BoxWiskers.data.1$GasmetD<-BoxWiskers.data.1[,8] - BoxWiskers.data.1[,7] ;
+
+str(BoxWiskers.data.1)
+
+#### Plot the differences
+
+BoxWiskers.data.2<-BoxWiskers.data.1[, c("Oct.1" , "Oct.12", "Oct.27" , "GasmetD")]
+
+
+png(file="Datadiff.png", width=3840, height=3840, pointsize=48) ;
+
+par( mar=c(5, 8, 4, 2) + 0.1)
+
+par(mgp=c(6,2,0))
+
+
+boxplot(BoxWiskers.data.2, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1), boxfill=c("BLUE", "GREEN" , "PURPLE",  "RED"  ),cex.axis=2, cex.lab=2)
+abline(h=0, lty=3)
+
+dev.off()
 

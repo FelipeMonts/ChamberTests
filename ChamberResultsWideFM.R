@@ -2,23 +2,73 @@
 #setwd('/Users/allis/OneDrive/Documents/N2O Project/ChamberPaper/GCResultsChamberTest')
 
 setwd("C:\\Felipe\\CCC Based Experiments\\StrategicTillage_NitrogenLosses_OrganicCoverCrops\\DataAnalysis\\RCode\\AllisCode")
-chamber <- read.csv('ChamberResults.csv')
+chamber.0 <- read.csv('ChamberResults.csv')
+str(chamber.0)
+head(chamber.0)
+
+#Read new results 2021/11/02
+
+chamber.new<-read.csv('ChamberResultsNew.csv')
+str(chamber.new)
+
+# Note that there are two tests in the 'ChamberResultsNew.csv' file. The  new results are the ones identified with Test 5 (ï..Test = 5). We need to select the records with test 5 and aded to the dataframe
+
+
+# Select the records with test =5
+
+chamber.new[chamber.new$ï..Test == 5,]
+
+#### Add the data of test 5 to the data frame
+
+### use rbind to attach the new data to the data frame
+
+chamber<-rbind(chamber.0 , chamber.new[chamber.new$ï..Test == 5,])
+
+#### Add the new results (data of test 5)  to the data frame
+
+#check
+
+str(chamber)
+head(chamber)
 
 #install package to organize data
 #install.packages("tidyr")
 
 
+#Using the package tidyr, Alli's or5iginal choice
+
 
 library(tidyr)
 #organize data with time as a variable
 wide_chamber <- chamber %>% spread(Time, Concentration)
-head(wide_chamber,40)
+head(wide_chamber)
 #rename columns
 colnames(wide_chamber)
 names(wide_chamber)[names(wide_chamber)== "0"] <- "T0"
 names(wide_chamber)[names(wide_chamber)== "10"] <- "T1"
 names(wide_chamber)[names(wide_chamber)== "20"] <- "T2"
 names(wide_chamber)[names(wide_chamber)== "30"] <- "T3"
+
+str(wide_chamber)
+head(wide_chamber)
+
+# Using R basic functions, this preferred because you can follow what happens, with tidyr is some times unpredictable
+
+#the function to use is reshape
+
+str(chamber)
+head(chamber)
+
+wide_chamber_2<-reshape(data=chamber, timevar= "Time" , idvar=c("ï..Test" , "Plot", "Chamber"), direction = "wide") ;
+
+
+# Check if the data fram was transformed right
+
+str(wide_chamber_2)
+head(wide_chamber_2)
+
+
+
 
 #create a function to do a linear model on the data and collect the slope coefficient
 
@@ -63,7 +113,7 @@ lm(Concentration~Time,data.linearmodel)
 
 Linear.Model.Results<-lm(Concentration~Time,data.linearmodel)
 
-# the results are stored in a precise form. I a list with all the parameters of a regression model and can be accessed by their name
+# the results are stored in a precise form. In a list with all the parameters of a regression model and can be accessed by their name
 
 str(Linear.Model.Results)
 
@@ -83,7 +133,7 @@ Linear.Model.Results$residuals
 
 # 1, 2, 3, etc until the last one.
 
-# the lastone can be found with dim()
+# the last one can be found with dim()
 
 dim(wide_chamber)  # 40 (rows)  7 (columns)
 
@@ -128,22 +178,39 @@ for(i in wide_chamber.rownumbers) {
 }
 
 str( Linear.Model.coeficients)
-Linear.Model.coeficients
+head(Linear.Model.coeficients)
 
 
 # Now we added to the wide_chamber data
 
 wide_chamber.AND.Coeff<-data.frame(wide_chamber,Linear.Model.coeficients )
 
-# 
-# #add the slope as a column
-# spl <- with (Concentration, split(Concentration, list(Test = Test,Plot = Plot, Chamber = Chamber)))
-# coefLM <- function(x){
-#   coef(lm())
-# }
-# 
-# 
-# library(dplyr)
-# library(broom)
-# fit_model <- function(wide_chamber) lm(Value ~Year, data = Wide_chamber)
-# get_slope <- function(mod) tidy(mod)$estimate[2]
+# check
+
+str( wide_chamber.AND.Coeff)
+head(wide_chamber.AND.Coeff)
+
+# The variables Plot, Chamber are read as characters and the variable ï..Test  as an integer. 
+# transforming those variables into factors will greatly facilitate the analysis.
+# Lets create new factors based on these variables
+
+#First ï..Test
+
+wide_chamber.AND.Coeff$Test.Factor<-as.factor(wide_chamber.AND.Coeff$ï..Test)
+
+
+#then Plot 
+
+wide_chamber.AND.Coeff$Plot.Factor<-as.factor(wide_chamber.AND.Coeff$Plot)
+
+
+
+#finally Chamber
+
+wide_chamber.AND.Coeff$Chamber.Factor<-as.factor(wide_chamber.AND.Coeff$Chamber)
+
+#check
+
+str( wide_chamber.AND.Coeff)
+head(wide_chamber.AND.Coeff)
+

@@ -214,3 +214,7 @@ wide_chamber.AND.Coeff$Chamber.Factor<-as.factor(wide_chamber.AND.Coeff$Chamber)
 str( wide_chamber.AND.Coeff)
 head(wide_chamber.AND.Coeff)
 
+
+# at this point we have the data we need for the analysis. Lets store it in a file that we can refer to for the analysis.
+
+write.csv(wide_chamber.AND.Coeff, file= "wide_chamber.AND.Coeff.csv", row.names=F)

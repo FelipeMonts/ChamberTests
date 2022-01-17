@@ -76,6 +76,17 @@ chamber.1<-chamber[,c("Test.Factor" , "Plot.Factor" ,   "Chamber.Factor", "Time"
 
 
 str(chamber.1)
+head(chamber.1)
+
+
+
+###############################################################################################################
+# Write the chamber data in to a file in order to create the graphics with the concentration of each chamber with time                          
+###############################################################################################################
+
+
+write.csv(chamber.1, file="ChamberConcentrationData.csv", row.names=F)
+
 
 
 #need to still convert to correct units
@@ -294,339 +305,7 @@ write.csv(Data.AND.Coefficients, file= "Data.AND.Coefficients.csv", row.names=F)
 
 
 
-# Calculate emission rate in kg/ha/d
 
-# slope ppm (1 vol/1000 vol) /min * Volume / Area 
-# 
-# PV=nRT  -> n=PV/RT  
-# 
-# volume (L) = 17.34161048
-# 
-# Surface Area (m2) = 0.170685143 
-# 
-# R L*atm/Mol*K = 0.08206
-# 
-# T=293
-# P=0.964949
-#
-
-# CO2 = 44.01 g/MOL
-
-Slope.Factor.Mol_m2_min = ((17.34161048/0.170685143) * 0.964949 / 1000000) / (0.08206 * 293)
-
-Slope.Factor.gm_m2_min = Slope.Factor.Mol_m2_min * 44.01
-
-Slope.Factor.kg_ha_d = (Slope.Factor.gm_m2_min * 10000 * 60 * 24) /1000 
-
-str(Data.AND.Coefficients)
-
-Data.AND.Coefficients$Mol_m2_min<-Data.AND.Coefficients$Slope * Slope.Factor.Mol_m2_min
-
-Data.AND.Coefficients$gm_m2_min<-Data.AND.Coefficients$Slope * Slope.Factor.gm_m2_min
-
-Data.AND.Coefficients$kg_ha_d<-Data.AND.Coefficients$Slope * Slope.Factor.kg_ha_d
-
-### Lets try the anova with the data set
-
-#One way ANOVA
-
-AOV.ONE<-aov(Slope~Plot.Factor, data=Data.AND.Coefficients)
-
-summary(AOV.ONE)
-
-#full anova
-AOV.FULL<-aov(kg_ha_d~Plot.Factor + Test.Factor * Chamber.Factor, data=Data.AND.Coefficients)
-
-summary(AOV.FULL)
-
-str(summary(AOV.FULL))
-
-
-print(AOV.FULL)
- 
-model.tables(AOV.FULL, type="means")
-
-# Tests Normality of the data
-qqnorm(Data.AND.Coefficients$Slope)
-qqline(Data.AND.Coefficients$Slope)
-shapiro.test(Data.AND.Coefficients$Slope)
-hist(Data.AND.Coefficients$Slope)
-
-# Test Normality of the residuals
-
-str(aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients))
-
-residuals(aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients))
-
-qqnorm(residuals(aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients)))
-qqline(residuals(aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients)))
-shapiro.test(residuals(aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients)))
-hist(residuals(aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients)))
-
-### Just for exploring, fitting a quadratic model to the data
-
-# adding the square of time to the data
-
-test.data<-spl[[1]]
-test.data$TimeSQ<-test.data$Time^2
-
-lm(Concentration~Time + TimeSQ,test.data)
-
-summary(lm(Concentration~Time + TimeSQ, test.data))
-
-
-#### Some more exploration.
-
-# one thing that influences a lot the slope of the regression is the concentration at T0. Lets check it.
-
-plot(chamber.1[chamber.1$Time == 0,c("Concentration")])
-
-# clearly there is an outlier in the concntration at T0 Lets find out who it is.
-
-chamber.1[chamber.1$Time == 0 & chamber.1$Concentration >=550,]
-# 
-# Test.Factor Plot.Factor Chamber.Factor Time Concentration
-# 100           4    Fallow-6         Manual    0      582.1678
-     
-# lets change that value to the median
-
-median(chamber.1[chamber.1$Time == 0,c("Concentration")])   #  412.2744
-
-chamber.T0.corrected<-chamber.1
-
-chamber.T0.corrected[100,]
-
-chamber.T0.corrected[100,c("Concentration")]<-412.2744
-
-# lets check the plot of T0 now
-
-
-plot(chamber.T0.corrected[chamber.T0.corrected$Time == 0,c("Concentration")])
-
-# its looks better. Lets redo the analysis with this correction
-
-# instead of redoing the full analysis wen only need to redo the analysis for the chunk of data that we changed.
-
-# which is
- chamber.T0.corrected[100,]
-# Test.Factor Plot.Factor Chamber.Factor Time Concentration
-# 100           4    Fallow-6         Manual    0      412.2744
-
- 
- # lets get the original data set for that slope and recalculate it
- 
- chamber.1[chamber.1$Test.Factor==4 & chamber.1$Plot.Factor == "Fallow-6" & chamber.1$Chamber.Factor == "Manual",]
-
-# store the data in a data frame for the linear analysis
- 
- T0.outlier.data<-chamber.1[chamber.1$Test.Factor==4 & chamber.1$Plot.Factor == "Fallow-6" & chamber.1$Chamber.Factor == "Manual",]
- 
- #correct the T0
- 
- T0.outlier.data[T0.outlier.data$Time==0,c("Concentration")]<-412.2744
-
-# calcualte the linear model coeffcientes 
- 
- coefLM.2(T0.outlier.data)
- 
-#(Intercept)        Time 
-# 473.34962    12.12611 
-
-#Add this data to the Data.AND.Coefficients table, and store it with a different name
- 
- Data.AND.Coefficients.1<-Data.AND.Coefficients
- 
- Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 4 & Data.AND.Coefficients.1$Plot.Factor == "Fallow-6" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", ]
- 
- # Correct the data
- 
- Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 4 & Data.AND.Coefficients.1$Plot.Factor == "Fallow-6" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("Concentration" , "Intercept" , "Slope")]<-c(412.2744,473.34962, 12.12611)
- 
- 
-# Check
- 
- Data.AND.Coefficients.1[34,]
- 
- # OK
- 
- # Then redo the anova with the corrected data
- 
- #full anova 2
- AOV.FULL.2<-aov(Slope~Plot.Factor + Test.Factor + Chamber.Factor, data=Data.AND.Coefficients.1)
- 
- summary(AOV.FULL.2)
- 
- str(AOV.FULL.2)
- 
- # This did not change the results at all.
- 
- 
- #how about using the transformation ?
- 
-# Klein, Cecile A. M. de, Marta A. Alfaro, Donna Giltrap, Cairistiona F. E. Topp, Priscila L. Simon, Alasdair D. L. Noble, and Tony J. van der Weerden. 2020. "Global Research Alliance N2O Chamber Methodology Guidelines: Statistical Considerations, Emission Factor Calculation, and Data Reporting." Journal of Environmental Quality 49 (5): 1156-67. https://doi.org/10.1002/jeq2.20127.
- 
- # Klein suggests the log transformation
- 
- 
-# Armen suggested the Ladder of Powers to find the best transformation a described in:
-#Kuehl, R. O. 2000. Design of Experiments: Statistical Principles of Research Design and Analysis. 2nd ed. Pacific Grove, CA: Duxbury/Thomson Learning. Pages 135-139
- 
-## For that estimates of the mean and standard deviation of the treatments groups are necessary. These can be obtained by taking the original data and removing the location and test effect. The location effect is not significant, therefore it does not need to be removed
- 
- str(AOV.FULL.2)
- summary(AOV.FULL.2)
-#obtained the effects of the test and the chamber location
-
- str(AOV.FULL.2$effects)
- print(AOV.FULL.2$effects)
- AOV.FULL.2$coefficients
- 
- model.tables(AOV.FULL.2, type="effects", se=T)
- # Tables of effects
- # 
- # Plot.Factor 
- # Plot.Factor
- # Fallow-1 Fallow-10  Fallow-2  Fallow-3  Fallow-4  Fallow-5  Fallow-6  Fallow-7  Fallow-8  Fallow-9 
- # -1.660    -4.136     4.593    -4.136     1.082    -2.107     2.257     4.979     2.029    -2.902 
- # 
- # Test.Factor 
- # Test.Factor
- # 3      4      5 
- # -3.715  6.855 -3.140 
- # 
- # Chamber.Factor 
- # Chamber.Factor
- # Automatic    Manual 
- # 2.125    -2.125 
- # 
- # Standard errors of effects
- # Plot.Factor Test.Factor Chamber.Factor
- # 2.327       1.274          1.041
- # replic.           6          20             30
-
- model.tables(AOV.FULL.2, type="means", se=T)
- 
- # Tables of means
- # Grand mean
- # 
- # 16.93071 
- # 
- # Plot.Factor 
- # Plot.Factor
- # Fallow-1 Fallow-10  Fallow-2  Fallow-3  Fallow-4  Fallow-5  Fallow-6  Fallow-7  Fallow-8  Fallow-9 
- # 15.271    12.794    21.523    12.795    18.013    14.824    19.188    21.909    18.960    14.029 
- # 
- # Test.Factor 
- # Test.Factor
- # 3      4      5 
- # 13.216 23.786 13.790 
- # 
- # Chamber.Factor 
- # Chamber.Factor
- # Automatic    Manual 
- # 19.056    14.806 
- # 
- # Standard errors for differences of means
- # Plot.Factor Test.Factor Chamber.Factor
- # 3.291       1.802          1.472
- # replic.           6          20             30
- #  
- # 
- 
-# Calculate data without the test effect
- 
- str(Data.AND.Coefficients.1)
- 
- Data.AND.Coefficients.1$Slope.NoTestEF<-999999;
- 
- Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 3 , c("Slope.NoTestEF")]<-Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 3 , c("Slope") ] + 3.715 ;
- 
- Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 4 , c("Slope.NoTestEF")]<-Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 4 , c("Slope") ] - 6.855 ;
- 
- Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 5 , c("Slope.NoTestEF")]<-Data.AND.Coefficients.1[Data.AND.Coefficients.1$Test.Factor == 5 , c("Slope") ] + 3.140  ;
-
- str(Data.AND.Coefficients.1)
- 
- # Get the means and the standard deviations within each treatment group.
- 
- 
- 
- 
- mean(Data.AND.Coefficients.1[Data.AND.Coefficients.1$Chamber.Factor == "Manual" , c("Slope.NoTestEF")]) #  14.80572
- sd(Data.AND.Coefficients.1[Data.AND.Coefficients.1$Chamber.Factor == "Manual" , c("Slope.NoTestEF")]) # 6.318756
- 
- mean(Data.AND.Coefficients.1[Data.AND.Coefficients.1$Chamber.Factor == "Automatic" , c("Slope.NoTestEF")]) # 19.05569
- sd(Data.AND.Coefficients.1[Data.AND.Coefficients.1$Chamber.Factor == "Automatic" , c("Slope.NoTestEF")]) # 5.88839
- 
- 
- Treatment.groups<-data.frame(Tr.Means=c(14.80572, 19.05569 ), Tr.Sd = c(6.318756,5.88839 ));
- 
- Treatment.groups$log.Tr.Means<-log(Treatment.groups$Tr.Means) ;
- Treatment.groups$log.Tr.Sd<-log(Treatment.groups$Tr.Sd) ;
- 
- 
- plot(Treatment.groups$log.Tr.Means,Treatment.groups$log.Tr.Sd, type="b" )
- 
- summary(lm(log.Tr.Sd~log.Tr.Means, data=Treatment.groups))
- 
- # Call:
- #   lm(formula = log.Tr.Sd ~ log.Tr.Means, data = Treatment.groups)
- # 
- # Residuals:
- #   ALL 2 residuals are 0: no residual degrees of freedom!
- #   
- #   Coefficients:
- #   Estimate Std. Error t value Pr(>|t|)
- # (Intercept)    2.5969         NA      NA       NA
- # log.Tr.Means  -0.2795         NA      NA       NA
- # 
- # Residual standard error: NaN on 0 degrees of freedom
- # Multiple R-squared:      1,	Adjusted R-squared:    NaN 
- # F-statistic:   NaN on 1 and 0 DF,  p-value: NA
- 
- 
- #Calculate the value of p
- 
- p=1-(-0.2795) #1.2795
- 
- ########## Plotting the data
- str(Data.AND.Coefficients.1)
- 
- Data.AND.Coefficients.1$Date<-Data.AND.Coefficients.1$Test.Factor;
- 
- levels(Data.AND.Coefficients.1$Date)<-list("October 1" = "3", "October 12" = "4" ,"October 27" = "5" ) ;
- 
- 
- library(lattice)
- 
- xyplot(Slope~Chamber.Factor, data=Data.AND.Coefficients.1)
- 
- bwplot(kg_ha_d~Chamber.Factor| Date,  data=Data.AND.Coefficients.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
- 
- bwplot(Concentration~Chamber.Factor, data=Data.AND.Coefficients.1, xlab=)
- 
- 
- # There are two very large rates in the automatic chamber, higher than 40. Lets find out which ones are these
- 
- Data.AND.Coefficients.1[Data.AND.Coefficients.1$Slope>=40,]
- 
- # >  Data.AND.Coefficients.1[Data.AND.Coefficients.1$Slope>=40,]
- # Test.Plot.Chamber Test.Factor Plot.Factor Chamber.Factor Time Concentration Intercept    Slope Log.Slope
- # 33 4.Fallow-6.Automatic           4    Fallow-6      Automatic    0      368.1008  363.2122 43.33147  3.768879
- # 37 4.Fallow-8.Automatic           4    Fallow-8      Automatic    0      308.4381  284.5666 40.63332  3.704588
- # >
- 
- # These two very large rates have very low T0 concentration.
- 
- # Could T0 concentration being the culprit of those very high rates?
- 
- # Lets explore the T0 concentrations
-
- xyplot(Concentration~Chamber.Factor, data=Data.AND.Coefficients.1)
- 
- bwplot(Concentration~Chamber.Factor, data=Data.AND.Coefficients.1)
- 
- # Very interesting !!!
  
  
 #### plot of figure ### in the manuscript with all the data
@@ -1076,11 +755,14 @@ dev.off()
 
 ## Plotting  together with the Gasmet data
 
-## str(Data.AND.Coefficients); head(Data.AND.Coefficients) ;
+# Read the Gasmet data whcih was procesed with the R code GasmetResults.R
 
-### Data from GasmetResults
+Gasmet.Flux.1<-read.csv('Gasmet.Flux.csv', header=T) :
 
-## str(Gasmet.Flux.1) ; head(Gasmet.Flux.1) ; str(SemiAuto.Flux.1) ; head(Gasmet.Flux.1) 
+str(Gasmet.Flux.1) 
+head(Gasmet.Flux.1) 
+
+#Convert the data into th eparopirate units
 
 Gasmet.Flux.1$kg_ha_d<-as.numeric(Gasmet.Flux.1$Slope) * Slope.Factor.kg_ha_d
 

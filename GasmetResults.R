@@ -66,7 +66,7 @@ Data.Home.Directory<-"C:\\Felipe\\CCC Based Experiments\\StrategicTillage_Nitrog
 Directory.List<-list.files(Data.Home.Directory);
 
 
-Directory.List.1<-Directory.List[seq(2,15)] ;
+Directory.List.1<-Directory.List[seq(3,16)] ;
 
 
 ##### Read one results file to see the structure
@@ -452,7 +452,7 @@ Gasmet.Flux$Frame<-sapply(strsplit(Gasmet.Flux$Sample.Name, split= "p"), functio
 ######## Compare the data with the Semi Automatic chambers
 
 
-SemiAuto.Flux<-read.xlsx(xlsxFile="C:\\Users\\frm10\\Downloads\\ChamberTestCalculationsREVISED20211025_FM.xlsx", sheet = "Auto (2)")
+SemiAuto.Flux<-read.xlsx(xlsxFile=paste0(Data.Home.Directory,"\\","ChamberTestCalculationsREVISED20211025_FM.xlsx"), sheet = "Auto (2)")
 
 sapply(strsplit(SemiAuto.Flux$Vial.Name, split="-"),function(x) x[2])
 
@@ -484,3 +484,10 @@ points(SemiAuto.Flux.1$Frame, SemiAuto.Flux.1$Slope.CO2, col="RED")
 plot(Gasmet.Flux.1$Slope,SemiAuto.Flux.1$Slope.CO2, col="BLUE", xlim=c(20,50), ylim=c(20,50), cex=3, ylab=expression('CO'[2]*' concentration (ppm)-Semi-automatic'), xlab=expression('CO'[2]*' concentration (ppm)-Gasmet'),cex.axis=2, cex.lab=2)
 abline(0, 1, col="RED", lwd=2)
 
+
+
+######## write the useful Gasmet data "Gasmet.Flux.1" to plot with the rest of the data if necessary
+str(Gasmet.Flux.1)
+head(Gasmet.Flux.1)
+
+write.csv(Gasmet.Flux.1, file="C:\\Felipe\\CCC Based Experiments\\StrategicTillage_NitrogenLosses_OrganicCoverCrops\\DataAnalysis\\RCode\\AllisCode\\Gasmet.Flux.csv", row.names = F)

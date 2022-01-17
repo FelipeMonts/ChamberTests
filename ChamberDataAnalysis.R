@@ -306,7 +306,7 @@ bwplot(Concentration~Chamber.Factor| Date, data=Data.AND.Coefficients,  ylab=exp
 
 Data.AND.Coefficients[Data.AND.Coefficients$Slope>=40,]
 
-# >  Data.AND.Coefficients.1[Data.AND.Coefficients.1$Slope>=40,]
+# >  Data.AND.Coefficients[Data.AND.Coefficients$Slope>=40,]
 # Test.Plot.Chamber Test.Factor Plot.Factor Chamber.Factor Time Concentration Intercept    Slope Log.Slope
 # 33 4.Fallow-6.Automatic           4    Fallow-6      Automatic    0      368.1008  363.2122 43.33147  3.768879
 # 37 4.Fallow-8.Automatic           4    Fallow-8      Automatic    0      308.4381  284.5666 40.63332  3.704588
@@ -325,467 +325,38 @@ bwplot(Concentration~Chamber.Factor, data=Data.AND.Coefficients)
 ## It does not appear that the initial concentration has anything to do with the high slopes
 
 
-#### plot of figure ### in the manuscript with all the data
-
-
-### Call a nice package for graphs colors
-
-library(RColorBrewer)
-library(colorRamps)
-
-colors<-brewer.pal(10, "Set3") ;
-
--#Create the graphs in postscript eps  or png format ready for publication 
-# ?print.trellis 
-
-#### Change the names of the test.factor , chamber factor and Plot. factor for the graphs
-
-
-str(chamber.1) ; head(chamber.1)
-
-
-levels(chamber.1$Test.Factor)<-c("October 1", "October 12", "October 27") ;
-
-levels(chamber.1$Test.Factor)<-rev(levels(chamber.1$Test.Factor))
-
-levels(chamber.1$Chamber.Factor)<-c("Semi-automatic" , "Manual") ;
-
-
-
-sapply(strsplit(as.character(chamber.1$Plot.Factor), split="-"), FUN=function(x) x[2])
-
-chamber.1$Frame<-as.factor(as.integer(sapply(strsplit(as.character(chamber.1$Plot.Factor), split="-"), FUN=function(x) x[2])))
-
-
-#   Plot all together
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1, cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-
-#   Plot all individually
-
-#October 1
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Semi-automatic", ], cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Manual", ], cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-
-
-#October 12
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Semi-automatic", ], cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Manual", ], cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-#October 27
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Semi-automatic", ], cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Plot.Factor), data=chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Manual", ], cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col="WHITE")))
-
-
-# only plot October 27  and October 1
-str(chamber.1)
-
-chamberOOct.1.27<-chamber.1[chamber.1$Test.Factor == "October 1" | chamber.1$Test.Factor == "October 27",]
-
-chamberOOct.1.12<-chamber.1[chamber.1$Test.Factor == "October 1" | chamber.1$Test.Factor == "October 12",]
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Frame), data=chamberOOct.1.27, cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col=gray(0.8, 1))))
-
-############################################################
-
-
-png(file="AllData1.png", width = 10, height = 8, units="in", res=2400, pointsize = 1)
-
-
-xyplot(Concentration ~ Time | Chamber.Factor + Date.Factor, groups = (Frame), data=chamberOOct.1.27, cex=1.5, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1, cex=1.5),key=list(corner=c(0,0.88), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab= "Time (minutes)", ylab=expression('CO'[2]*' concentration (ppm)'), par.settings = list(strip.background=list(col=gray(0.8, 1)), par.ylab.text=list(cex=2), par.xlab.text=list(cex=2)), par.strip.text=list(col="BLACK", cex=1.5), ylim=c(200, 1600))
-
-
-dev.off()
-
-# only plot October 1  and October 12
-
-
-
-png(file="AllData2.png", width = 10, height = 8, units="in", res=2400, pointsize = 1)
-
-
-xyplot(Concentration ~ Time | Chamber.Factor + Date.Factor, groups = (Frame), data=chamberOOct.1.12, cex=1.5, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1, cex=1.5),key=list(corner=c(0,0.88), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab= "Time (minutes)", ylab=expression('CO'[2]*' concentration (ppm)'), par.settings = list(strip.background=list(col=gray(0.8, 1)), par.ylab.text=list(cex=2), par.xlab.text=list(cex=2)), par.strip.text=list(col="BLACK", cex=1.5))
-
-
-dev.off()
-
-# only plot all the data
-
-png(file="AllData3.png", width = 8, height = 11, units="in", res=2400, pointsize = 1)
-
-
-xyplot(Concentration ~ Time | Chamber.Factor + Test.Factor, groups = (Frame), data=chamber.1, cex=1.5, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1, cex=1.5),key=list(corner=c(0,0.88), columns=2, text=list(levels(chamber.1$Frame), cex=1), lines=list(col=primary.colors(10), type="b", pch=16)), xlab= "Time (minutes)", ylab=expression('CO'[2]*' concentration (ppm)'), par.settings = list(strip.background=list(col=gray(0.8, 1)), par.ylab.text=list(cex=2), par.xlab.text=list(cex=2)), par.strip.text=list(col="BLACK", cex=1.5))
-
-
-dev.off()
-
-
-
-#################################################################################
-
-#### Exploring the potential defective points
-
-str(chamber.1)
-
-Questionable.Points<-rbind(chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Manual" & (chamber.1$Frame == 3 | chamber.1$Frame == 4), ],
-                           chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Semi-automatic" & (chamber.1$Frame == 4 | chamber.1$Frame == 10), ],
-                           chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Manual" & (chamber.1$Frame == 7 | chamber.1$Frame == 10), ],
-                           chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == 2, ],
-                           chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Manual" & (chamber.1$Frame == 2 | chamber.1$Frame == 1), ])
-
-
-
-xyplot(Concentration ~ Time |  Chamber.Factor + Test.Factor , groups = (Frame), data=Questionable.Points, cex=0.75, lwd=3, type=c("b", "g"), col=primary.colors(10) ,pch=16, draw.key = T, between = list(x = 0.5, y = 0.5), scales=list(x="same", y="same", alternating=1,cex=1),key=list(corner=c(0,0.9), columns=1, text=list(levels(chamber.1$Frame)), lines=list(col=primary.colors(10), type="b", pch=16)), xlab="Time (minutes)", ylab="CO2 concentration (ppm)", par.settings = list(strip.background=list(col=gray(0.8, 1))))
-
-# The potential flaw points are not as bad as they seem.
-
-#######################################################
-
-
-
-# Try the HMR package for analysis 
-
-install.packages("HMR", dep=T)
-
-library(HMR)
-
-
-# calculating the dispersion of the data for prefiltering based on the  T zero concentration
-
-str(chamber.1) ; head(chamber.1)
-
-T0.Concentrations<-chamber.1[chamber.1$Time == 0 ,]
-
-## All
-mean(T0.Concentrations[,c("Concentration") ]) #371.1288
-median(T0.Concentrations[,c("Concentration") ]) # 391.4586
-var(T0.Concentrations[,c("Concentration") ]) # 4548.059
-sd(T0.Concentrations[, c("Concentration") ]) # 67.4393 
-
-
-
-## October 1st
-
-mean(T0.Concentrations[T0.Concentrations$Test.Factor == "October 1",c("Concentration") ]) # 292.485
-median(T0.Concentrations[T0.Concentrations$Test.Factor == "October 1",c("Concentration") ]) # 289.8367
-var(T0.Concentrations[T0.Concentrations$Test.Factor == "October 1",c("Concentration") ]) # 707.1513
-sd(T0.Concentrations[T0.Concentrations$Test.Factor == "October 1",c("Concentration") ]) #26.59232
-
-
-
-## October 12
-
-mean(T0.Concentrations[T0.Concentrations$Test.Factor == "October 12",c("Concentration") ]) # 405.0755
-median(T0.Concentrations[T0.Concentrations$Test.Factor == "October 12",c("Concentration") ]) # 401.6952
-var(T0.Concentrations[T0.Concentrations$Test.Factor == "October 12",c("Concentration") ]) # 2656.669
-sd(T0.Concentrations[T0.Concentrations$Test.Factor == "October 12",c("Concentration") ]) #51.54289
-
-
-## October 27
-
-mean(T0.Concentrations[T0.Concentrations$Test.Factor == "October 27",c("Concentration") ]) #  415.8261
-median(T0.Concentrations[T0.Concentrations$Test.Factor == "October 27",c("Concentration") ]) # 413.107
-var(T0.Concentrations[T0.Concentrations$Test.Factor == "October 27",c("Concentration") ]) # 932.7147
-sd(T0.Concentrations[T0.Concentrations$Test.Factor == "October 27",c("Concentration") ]) #530.54038
-
-
-# Preparing the data for the HMR Package. Creating the series name
-
-
-chamber.1$Series<-paste0(chamber.1$Test.Factor, ".", chamber.1$Frame, ".", chamber.1$Chamber.Factor);
-
-chamber.1$V<-17.34/1000 # m3
-
-chamber.1$A<-0.17  # m2
-
-Data.HMR<-chamber.1[,c("Series", "V" , "A" , "Time" , "Concentration")] ;
-
-write.csv(Data.HMR, file= "Data.HMR.csv", row.names = F)
-
-HMR("Data.HMR.csv", series = c("October 27.1.Manual", "October 27.1.Semi-automatic"), sep="," , LR.always = T)
-
-
-#################################################################################################################
-#
-#
-#    Try a different plot with regression bands
-#
-#
-#
-#################################################################################################################
-
-## October 1st
-
-str(chamber.1) ; head(chamber.1)
-
-# plot the data with the linear model
-
-# plot colors 
-length(primary.colors())
-
-#Colores<-primary.colors()[c(2,3,4,5,6,7,9,10,11,12,14,15,16,21,22,26)]
-
-Colores<-primary.colors()[1:10]
-
-Col.view<-c(seq(from=1, to=length(Colores), by=1))
-
-barplot(Col.view, col=Colores,names.arg = Col.view )
-
-Colores.Banda<-paste0(Colores, "22")
-
-
-
-barplot(Col.view, col=Colores.Banda,names.arg = Col.view )
-
-
-
-####################################################################################
-
-png(file="AllData3.png", width=3840, height=3840, pointsize=48)
-
-# i = 1 
-
-par( mar=c(5, 5, 4, 2) + 0.1)
-par(mfrow=c(3,2))
-
-### Semi automatic
-
-plot(NULL, xlim=c(0,30), ylim=c(0,1800), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="", cex.axis=2, cex.lab=2, main="Semi-automatic, October 1 ", cex.main=2);
-
-grid(nx = NULL, ny = NULL, col = "lightgray", lty = 1,lwd = par("lwd"), equilogs = TRUE);
-
-for (i in seq( 1,10,1)){   
-  
-  data.lm<-chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, ];
-  
-  linear.model<-lm(Concentration~Time, data=data.lm) ;
-  
-  pred.x<-seq(min(data.lm$Time), max(data.lm$Time),by=1) ;
-  
-  conf_interval<-predict(linear.model, newdata = data.frame(Time=pred.x), interval="confidence", level = 0.95)
-  
-  
-  
-  #  plot(NULL, xlim=c(0,30), ylim=c(200,1000), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)")
-  #  polygon(c(rev(pred.x), pred.x), c(rev(conf_interval[,3]),conf_interval[,2]),col=Colores.Banda[i], border = NA )
-  
-  points(chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, c("Time") ],chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, c("Concentration")]  , col=Colores[i], pch=16, cex=2) ;
-  abline(linear.model, col=Colores[i],lwd=3, lty=1);
-  
-  
-  
-  rm( linear.model,pred.x,conf_interval)
-  
-}
-
-legend(x=0,y=1800,legend=seq(from=1, to=10, by=1),col=Colores, pch=16, bty="n", lty=1, cex=1.5,ncol=2 )
-
-
-
-### Manual
-
-plot(NULL, xlim=c(0,30), ylim=c(0,1800), ylab="", xlab="", cex.axis=2, cex.lab=2, main="Manual, October 1 ", cex.main=2)
-grid(nx = NULL, ny = NULL, col = "lightgray", lty = 1,lwd = par("lwd"), equilogs = TRUE);
-
-for (i in seq( 1,10,1)){   
-  
-  data.lm<-chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, ];
-  
-  linear.model<-lm(Concentration~Time, data=data.lm) ;
-  
-  pred.x<-seq(min(data.lm$Time), max(data.lm$Time),by=1) ;
-  
-  conf_interval<-predict(linear.model, newdata = data.frame(Time=pred.x), interval="confidence", level = 0.95)
-  
-  
-  
-  #  plot(NULL, xlim=c(0,30), ylim=c(200,1000), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)")
-  #  polygon(c(rev(pred.x), pred.x), c(rev(conf_interval[,3]),conf_interval[,2]),col=Colores.Banda[i], border = NA )
-  
-  points(chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, c("Time") ],chamber.1[chamber.1$Test.Factor == "October 1" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, c("Concentration")]  , col=Colores[i], pch=16, cex=2) ;
-  abline(linear.model, col=Colores[i],lwd=3, lty=1);
-  
-  
-  
-  rm( linear.model,pred.x,conf_interval)
-  
-}
-
-# legend(x=0,y=1000,legend=seq(from=1, to=10, by=1),col=Colores, pch=16, bty="n", lty=1)
-
-
-
-###################### October 12
-
-
-### Semi automatic
-
-plot(NULL, xlim=c(0,30), ylim=c(0,1800), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="", cex.axis=2, cex.lab=2, main="Semi-automatic, October 12 ", cex.main=2)
-
-grid(nx = NULL, ny = NULL, col = "lightgray", lty = 1,lwd = par("lwd"), equilogs = TRUE);
-
-for (i in seq( 1,10,1)){   
-  
-  data.lm<-chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, ];
-  
-  linear.model<-lm(Concentration~Time, data=data.lm) ;
-  
-  pred.x<-seq(min(data.lm$Time), max(data.lm$Time),by=1) ;
-  
-  conf_interval<-predict(linear.model, newdata = data.frame(Time=pred.x), interval="confidence", level = 0.95)
-  
-  
-  
-  #  plot(NULL, xlim=c(0,30), ylim=c(200,1000), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)")
-  #  polygon(c(rev(pred.x), pred.x), c(rev(conf_interval[,3]),conf_interval[,2]),col=Colores.Banda[i], border = NA )
-  
-  points(chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, c("Time") ],chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, c("Concentration")]  , col=Colores[i], pch=16, cex=2) ;
-  abline(linear.model, col=Colores[i],lwd=3, lty=1);
-  
-  rm(linear.model,pred.x,conf_interval,data.lm)
-  
-}
-
-# legend(x=0,y=1000,legend=seq(from=1, to=10, by=1),col=Colores, pch=16, bty="n", lty=1)
-
-
-### Manual
-
-plot(NULL, xlim=c(0,30), ylim=c(0,1800), ylab="", xlab="", cex.axis=2, cex.lab=2, main="Manual, October 12 ", cex.main=2)
-
-grid(nx = NULL, ny = NULL, col = "lightgray", lty = 1,lwd = par("lwd"), equilogs = TRUE);
-
-for (i in seq( 1,10,1)){   
-  
-  data.lm<-chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, ];
-  
-  linear.model<-lm(Concentration~Time, data=data.lm) ;
-  
-  pred.x<-seq(min(data.lm$Time), max(data.lm$Time),by=1) ;
-  
-  conf_interval<-predict(linear.model, newdata = data.frame(Time=pred.x), interval="confidence", level = 0.95)
-  
-  
-  
-  #  plot(NULL, xlim=c(0,30), ylim=c(200,1000), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)")
-  #  polygon(c(rev(pred.x), pred.x), c(rev(conf_interval[,3]),conf_interval[,2]),col=Colores.Banda[i], border = NA )
-  
-  points(chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, c("Time") ],chamber.1[chamber.1$Test.Factor == "October 12" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, c("Concentration")]  , col=Colores[i], pch=16, cex=2) ;
-  abline(linear.model, col=Colores[i],lwd=3, lty=1);
-  
-  
-  
-  rm( linear.model,pred.x,conf_interval)
-  
-}
-
-# legend(x=0,y=1000,legend=seq(from=1, to=10, by=1),col=Colores, pch=16, bty="n", lty=1)
-
-
-###################### October 27
-
-
-### Semi automatic
-
-plot(NULL, xlim=c(0,30), ylim=c(0,1800), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)", cex.axis=2, cex.lab=2, main="Semi-automatic, October 27 ", cex.main=2)
-
-grid(nx = NULL, ny = NULL, col = "lightgray", lty = 1,lwd = par("lwd"), equilogs = TRUE);
-
-for (i in seq( 1,10,1)){   
-  
-  data.lm<-chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, ];
-  
-  linear.model<-lm(Concentration~Time, data=data.lm) ;
-  
-  pred.x<-seq(min(data.lm$Time), max(data.lm$Time),by=1) ;
-  
-  conf_interval<-predict(linear.model, newdata = data.frame(Time=pred.x), interval="confidence", level = 0.95)
-  
-  
-  
-  #  plot(NULL, xlim=c(0,30), ylim=c(200,1000), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)")
-  #  polygon(c(rev(pred.x), pred.x), c(rev(conf_interval[,3]),conf_interval[,2]),col=Colores.Banda[i], border = NA )
-  
-  points(chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, c("Time") ],chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Semi-automatic" & chamber.1$Frame == i, c("Concentration")]  , col=Colores[i], pch=16, cex=2) ;
-  abline(linear.model, col=Colores[i],lwd=3, lty=1);
-  
-  rm(linear.model,pred.x,conf_interval,data.lm)
-  
-}
-
-# legend(x=0,y=1000,legend=seq(from=1, to=10, by=1),col=Colores, pch=16, bty="n", lty=1)
-
-
-### Manual 
-
-plot(NULL, xlim=c(0,30), ylim=c(0,1800), ylab="", xlab="Time (minutes)", cex.axis=2, cex.lab=2, main="Manual, October 27 ", cex.main=2)
-
-grid(nx = NULL, ny = NULL, col = "lightgray", lty = 1,lwd = par("lwd"), equilogs = TRUE);
-
-for (i in seq( 1,10,1)){   
-  # i=1 
-  data.lm<-chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, ];
-  
-  linear.model<-lm(Concentration~Time, data=data.lm) ;
-  
-  pred.x<-seq(min(data.lm$Time), max(data.lm$Time),by=1) ;
-  
-  conf_interval<-predict(linear.model, newdata = data.frame(Time=pred.x), interval="confidence", level = 0.95)
-  
-  
-  
-  #  plot(NULL, xlim=c(0,30), ylim=c(200,1000), ylab=expression('CO'[2]*' concentration (ppm)'), xlab="Time (minutes)")
-  #  polygon(c(rev(pred.x), pred.x), c(rev(conf_interval[,3]),conf_interval[,2]),col=Colores.Banda[i], border = NA )
-  
-  points(chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, c("Time") ],chamber.1[chamber.1$Test.Factor == "October 27" & chamber.1$Chamber.Factor == "Manual" & chamber.1$Frame == i, c("Concentration")]  , col=Colores[i], pch=16, cex=2) ;
-  abline(linear.model, col=Colores[i],lwd=3, lty=1);
-  
-  
-  
-  rm( linear.model,pred.x,conf_interval)
-  
-}
-
-# legend(x=0,y=1000,legend=seq(from=1, to=10, by=1),col=Colores, pch=16, bty="n", lty=1)
-
-
-dev.off()
-
-
 
 ####################################################################################################
 
 ## Plotting  together with the Gasmet data
 
-# Read the Gasmet data whcih was procesed with the R code GasmetResults.R
+# Read the Gasmet  and the matching semiautomatic chamber data which was processed with the R code GasmetResults.R
 
-Gasmet.Flux.1<-read.csv('Gasmet.Flux.csv', header=T) :
-  
-  str(Gasmet.Flux.1) 
+Gasmet.Flux.1<-read.csv('GasmetFlux.csv', header=T) ;
+
+#check
+
+str(Gasmet.Flux.1) 
 head(Gasmet.Flux.1) 
 
-#Convert the data into th eparopirate units
 
-Gasmet.Flux.1$kg_ha_d<-as.numeric(Gasmet.Flux.1$Slope) * Slope.Factor.kg_ha_d
+SemiAuto.Flux.1<-read.csv('SemiAutoFlux.csv', header=T) ;
 
-SemiAuto.Flux.1$kg_ha_d<-SemiAuto.Flux.1$Slope.CO2 * Slope.Factor.kg_ha_d
+#check
+
+str(SemiAuto.Flux.1) 
+head(SemiAuto.Flux.1) 
+
+#Convert the data into the appropriate units
+
+Gasmet.Flux.1$kg_ha_d<-as.numeric(Gasmet.Flux.1$Slope) * Slope.Factor.kg_ha_d ;
+
+SemiAuto.Flux.1$kg_ha_d<-as.numeric(SemiAuto.Flux.1$Slope.CO2) * Slope.Factor.kg_ha_d ;
+
 
 par( mar=c(5, 5, 4, 2) + 0.1)
 
-png(file="AllData3_b.png", width=3840, height=3840, pointsize=48)
+png(file="AllData3_1to1.png", width=3840, height=3840, pointsize=48)
 
 par( mar=c(8, 9, 4, 2) + 0.1)
 
@@ -807,11 +378,11 @@ legend(x=80,y=40,legend=c("Oct-1", "Oct-12", "Oct-27", "Gasmet"),col=c("BLUE", "
 
 dev.off()
 
-str(Data.AND.Coefficients.1)
 
-Data.AND.Coefficients.1$Date<-Data.AND.Coefficients.1$Test.Factor;
 
-levels(Data.AND.Coefficients.1$Date)<-list("October 1" = "3", "October 12" = "4" ,"October 27" = "5" ) ;
+Data.AND.Coefficients$Date<-Data.AND.Coefficients$Test.Factor;
+
+levels(Data.AND.Coefficients$Date)<-list("October 1" = "3", "October 12" = "4" ,"October 27" = "5" ) ;
 
 
 
@@ -819,29 +390,44 @@ levels(Data.AND.Coefficients.1$Date)<-list("October 1" = "3", "October 12" = "4"
 
 ## Plotting the raw emission data for alldata 
 
-str(Data.AND.Coefficients.1)
+str(Data.AND.Coefficients)
 
 str(Gasmet.Flux.1) 
 
 str(SemiAuto.Flux.1)
 
+
+#convert the Sample.Name in Gasmet.Flux.1 into a factor so we can use it to plot in groups
+
 Gasmet.Flux.1$Plot.Factor<-as.factor(Gasmet.Flux.1$Sample.Name) ;
 
 
+# plot all the data by chamber
+
+xyplot(Slope~Chamber.Factor, data=Data.AND.Coefficients)
+
+# box whiskers plot of all the data by chamber
+
+bwplot(kg_ha_d~Chamber.Factor| Date,  data=Data.AND.Coefficients, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
+
+# box whiskers plot of all the data together 
+
+boxplot(kg_ha_d ~ Chamber.Factor + Date,  data=Data.AND.Coefficients, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
 
 
-xyplot(Slope~Chamber.Factor, data=Data.AND.Coefficients.1)
 
-bwplot(kg_ha_d~Chamber.Factor| Date,  data=Data.AND.Coefficients.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
+########## Create a more sophisticated Box and whiskers plot of all the data together.
 
-boxplot(kg_ha_d ~ Chamber.Factor + Date,  data=Data.AND.Coefficients.1, ylab=expression('CO'[2]*~ 'emission rate'~ 'kg'^-1 ~ 'ha'^-1 ~ 'd'^-1))
+# for that we need to collect all the data to be plotted into a new data frame we will call BoxWiskers.data
 
 
-BoxWiskers.data<-cbind(Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 1" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 1" & Data.AND.Coefficients.1$Chamber.Factor == "Automatic", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 12" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 12" & Data.AND.Coefficients.1$Chamber.Factor == "Automatic", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 27" & Data.AND.Coefficients.1$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients.1[Data.AND.Coefficients.1$Date == "October 27" & Data.AND.Coefficients.1$Chamber.Factor == "Automatic", c("kg_ha_d")], Gasmet.Flux.1$kg_ha_d, SemiAuto.Flux.1$kg_ha_d) ;
+BoxWiskers.data<-cbind(Data.AND.Coefficients[Data.AND.Coefficients$Date == "October 1" & Data.AND.Coefficients$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients[Data.AND.Coefficients$Date == "October 1" & Data.AND.Coefficients$Chamber.Factor == "Automatic", c("kg_ha_d")], Data.AND.Coefficients[Data.AND.Coefficients$Date == "October 12" & Data.AND.Coefficients$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients[Data.AND.Coefficients$Date == "October 12" & Data.AND.Coefficients$Chamber.Factor == "Automatic", c("kg_ha_d")], Data.AND.Coefficients[Data.AND.Coefficients$Date == "October 27" & Data.AND.Coefficients$Chamber.Factor == "Manual", c("kg_ha_d")], Data.AND.Coefficients[Data.AND.Coefficients$Date == "October 27" & Data.AND.Coefficients$Chamber.Factor == "Automatic", c("kg_ha_d")], Gasmet.Flux.1$kg_ha_d, SemiAuto.Flux.1$kg_ha_d) ;
 
 str(BoxWiskers.data)
 
 BoxWiskers.data.1<-as.data.frame(BoxWiskers.data);
+
+str(BoxWiskers.data.1)
 
 BoxWiskers.data.1[6:10, 7:8]<-NA
 
@@ -851,7 +437,7 @@ str(BoxWiskers.data.1)
 
 names(BoxWiskers.data.1)<-c("Manual" ,  "Semi", "Manual" ,  "Semi", "Manual" ,  "Semi", "Gasmet" , "Semi") ;
 
-png(file="AllData3_c.png", width=3840, height=3840, pointsize=48) ;
+png(file="AllData3_BW.png", width=3840, height=3840, pointsize=48) ;
 
 par( mar=c(5, 8, 4, 2) + 0.1)
 

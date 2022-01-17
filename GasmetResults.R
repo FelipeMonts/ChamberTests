@@ -486,8 +486,10 @@ abline(0, 1, col="RED", lwd=2)
 
 
 
-######## write the useful Gasmet data "Gasmet.Flux.1" to plot with the rest of the data if necessary
+######## write the useful Gasmet data "Gasmet.Flux.1" , and the matching Semiautomatic chamber fluxes to plot with the rest of the data if necessary
 str(Gasmet.Flux.1)
 head(Gasmet.Flux.1)
 
-write.csv(Gasmet.Flux.1, file="C:\\Felipe\\CCC Based Experiments\\StrategicTillage_NitrogenLosses_OrganicCoverCrops\\DataAnalysis\\RCode\\AllisCode\\Gasmet.Flux.csv", row.names = F)
+write.csv(Gasmet.Flux.1, file="C:\\Felipe\\CCC Based Experiments\\StrategicTillage_NitrogenLosses_OrganicCoverCrops\\DataAnalysis\\RCode\\AllisCode\\GasmetFlux.csv", row.names = F)
+
+write.csv(SemiAuto.Flux.1, file="C:\\Felipe\\CCC Based Experiments\\StrategicTillage_NitrogenLosses_OrganicCoverCrops\\DataAnalysis\\RCode\\AllisCode\\SemiAutoFlux.csv", row.names = F)

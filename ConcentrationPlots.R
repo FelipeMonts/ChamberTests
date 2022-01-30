@@ -41,9 +41,9 @@ setwd("C:\\Felipe\\CCC Based Experiments\\StrategicTillage_NitrogenLosses_Organi
 ###############################################################################################################
 
 
-#install.packages("RColorBrewer" , "colorRamps" , dependencies = T)
+#install.packages("RColorBrewer" , "colorRamps" , dependencies = T, lib="C:/Felipe/SotwareANDCoding/R_Library/library")
 
-
+# install.packages("HMR", dep=T, lib="C:/Felipe/SotwareANDCoding/R_Library/library")
 
 ###############################################################################################################
 #                           load the libraries that are needed   
@@ -505,7 +505,7 @@ dev.off()
 
 # Try the HMR package for analysis 
 
-install.packages("HMR", dep=T)
+install.packages("HMR", dep=T, lib="C:/Felipe/SotwareANDCoding/R_Library/library")
 
 library(HMR)
 
@@ -563,3 +563,4 @@ Data.HMR<-Chamber.Conc.Data[,c("Series", "V" , "A" , "Time" , "Concentration")] 
 write.csv(Data.HMR, file= "Data.HMR.csv", row.names = F)
 
 HMR("Data.HMR.csv", series = c("October 27.1.Manual", "October 27.1.Semi-automatic"), sep="," , LR.always = T)
+
